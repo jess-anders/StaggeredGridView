@@ -19,11 +19,6 @@ package com.origamilabs.library.views;
  *
  */
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import com.origamilabs.library.R;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -44,17 +39,14 @@ import android.support.v4.widget.EdgeEffectCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.ContextMenu;
+import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.HapticFeedbackConstants;
-import android.view.MotionEvent;
-import android.view.SoundEffectConstants;
-import android.view.VelocityTracker;
-import android.view.View;
-import android.view.ViewConfiguration;
-import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.ListAdapter;
+import com.origamilabs.library.R;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * ListView and GridView just not complex enough? Try StaggeredGridView!
@@ -1294,22 +1286,15 @@ public class StaggeredGridView extends ViewGroup {
 
         int highestView = getHeight();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 3b3f390ecfad60b228ff4967ab6c932cf2a10e68
-        for (int i = 0; i < mColCount; i++) {
-=======
         for (int i = 0; i < mColCount;) {
->>>>>>> a9050176a6f84f5ca399e2afdc8d627882bf842e
         	final View child = getFirstChildAtColumn(i);
 
         	if(child == null){
         		highestView = 0;
         		break;
         	}
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
-            i += Math.max(lp.span,1);
+          LayoutParams lp = (LayoutParams) child.getLayoutParams();
+          i += Math.max(lp.span,1);
 
         	final int top = child.getTop();
 
@@ -1697,13 +1682,8 @@ public class StaggeredGridView extends ViewGroup {
         clearAllState();
         mAdapter = adapter;
         mDataChanged = true;
-<<<<<<< HEAD
-<<<<<<< HEAD
+
         mItemCount = adapter != null ? adapter.getCount() : 0;
-=======
->>>>>>> a9050176a6f84f5ca399e2afdc8d627882bf842e
-=======
->>>>>>> 3b3f390ecfad60b228ff4967ab6c932cf2a10e68
 
         if (adapter != null) {
             adapter.registerDataSetObserver(mObserver);
@@ -2124,21 +2104,8 @@ public class StaggeredGridView extends ViewGroup {
             super(in);
             firstId = in.readLong();
             position = in.readInt();
-<<<<<<< HEAD
             topOffsets = in.createIntArray();
-            mapping = in.createTypedList(ColMap.CREATOR);
-            
-=======
-            in.createIntArray(topOffsets);
-            in.readTypedList(mapping, ColMap.CREATOR);
-
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 57a89f63166270cbfa981ca33ed7300280e65263
-=======
->>>>>>> a9050176a6f84f5ca399e2afdc8d627882bf842e
-=======
->>>>>>> 3b3f390ecfad60b228ff4967ab6c932cf2a10e68
+            //TODO //mapping = in.createTypedList(ColMap.CREATOR);
         }
 
         @Override
