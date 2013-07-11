@@ -2041,6 +2041,14 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
 
         @Override
         public void onInvalidated() {
+          post(new Runnable() {
+            @Override
+            public void run() {
+              removeAllViewsInLayout();
+              mDataChanged = true;
+              populate(false);
+            }
+          });
         }
     }
 
