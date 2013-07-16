@@ -1817,25 +1817,26 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
     public void onRestoreInstanceState(Parcelable state) {
         SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
-        mDataChanged = true;
-        mFirstPosition = ss.position;
-        mRestoreOffsets = ss.topOffsets;
-
-        ArrayList<ColMap> convert = ss.mapping;
-
-        if(convert != null){
-        	mColMappings.clear();
-        	for(ColMap colMap : convert){
-        		mColMappings.add(colMap.values);
-        	}
-        }
-
-        if(ss.firstId>=0){
-        	this.mFirstAdapterId = ss.firstId;
-        	mSelectorPosition = INVALID_POSITION;
-        }
-
-        requestLayout();
+//TODO
+//        mDataChanged = true;
+//        mFirstPosition = ss.position;
+//        mRestoreOffsets = ss.topOffsets;
+//
+//        ArrayList<ColMap> convert = ss.mapping;
+//
+//        if(convert != null){
+//        	mColMappings.clear();
+//        	for(ColMap colMap : convert){
+//        		mColMappings.add(colMap.values);
+//        	}
+//        }
+//
+//        if(ss.firstId>=0){
+//        	this.mFirstAdapterId = ss.firstId;
+//        	mSelectorPosition = INVALID_POSITION;
+//        }
+//
+//        requestLayout();
     }
 
     public static class LayoutParams extends ViewGroup.LayoutParams {
