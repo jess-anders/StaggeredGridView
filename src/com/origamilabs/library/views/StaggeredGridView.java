@@ -132,6 +132,7 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
     private boolean mBeginClick;
     private View mPressedChild;
     private ColumnCountListener mColumnCountListener;
+    private boolean mNeedToNotifyColumnCount;
 
     private static final int TOUCH_MODE_IDLE = 0;
     private static final int TOUCH_MODE_DRAGGING = 1;
@@ -341,6 +342,7 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
         final boolean needsPopulate = colCount != mColCount;
         mColCount = mColCountSetting = colCount;
         if (needsPopulate) {
+            mNeedToNotifyColumnCount = true;
             populate(false);
         }
     }
@@ -714,6 +716,16 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
         final int height = getHeight();
         final int clearAbove = -mItemMargin;
         final int clearBelow = height + mItemMargin;
+
+        final int[] itemsPerColumn = new int[mColCount];
+        for (int i = getChildCount() - 1; i >= 0; i--) {
+          final View child = getChildAt(i);
+          LayoutParams params = (LayoutParams) child.getLayoutParams();
+          if (params != null) {
+            itemsPerColumn[params.column] = ++itemsPerColumn[params.column];
+          }
+        }
+
         for (int i = getChildCount() - 1; i >= 0; i--) {
             final View child = getChildAt(i);
             if (child.getTop() <= clearBelow)  {
@@ -722,6 +734,20 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
                 break;
             }
 
+//            int bottom = child.getBottom();
+//            if (bottom >= clearAbove) {
+//              // There may be other offscreen views, but we need to maintain
+//              // the invariant documented above.
+//              break;
+//            }
+//
+//            LayoutParams params = (LayoutParams) child.getLayoutParams();
+//            if (params != null) {
+//              int column = params.column;
+//              if (column >= 0 && column < mItemBottoms.length && itemsPerColumn[column] == 1)  {
+//                break;
+//              }
+//            }
             if (mInLayout) {
                 removeViewsInLayout(i, 1);
             } else {
@@ -733,10 +759,20 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
 
         while (getChildCount() > 0) {
             final View child = getChildAt(0);
-            if (child.getBottom() >= clearAbove) {
+
+            int bottom = child.getBottom();
+            if (bottom >= clearAbove) {
                 // There may be other offscreen views, but we need to maintain
                 // the invariant documented above.
                 break;
+            }
+
+            LayoutParams params = (LayoutParams) child.getLayoutParams();
+            if (params != null) {
+              int column = params.column;
+              if (column >= 0 && column < mItemBottoms.length && itemsPerColumn[column] == 1)  {
+                break;
+              }
             }
 
             if (mInLayout) {
@@ -901,10 +937,12 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
             final int colCount = widthSize / mMinColWidth;
             if (colCount != mColCount) {
                 mColCount = colCount;
-                if (mColumnCountListener != null) {
-                  mColumnCountListener.columnCountSet(mColCount);
-                }
+                mNeedToNotifyColumnCount = true;
             }
+        }
+
+        if (mNeedToNotifyColumnCount) {
+          notifyColumnCount();
         }
     }
 
@@ -930,10 +968,12 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
             final int colCount = getWidth() / mMinColWidth;
             if (colCount != mColCount) {
                 mColCount = colCount;
-                if (mColumnCountListener != null) {
-                  mColumnCountListener.columnCountSet(mColCount);
-                }
+                mNeedToNotifyColumnCount = true;
             }
+        }
+
+        if (mNeedToNotifyColumnCount) {
+          notifyColumnCount();
         }
 
         final int colCount = mColCount;
@@ -977,6 +1017,13 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
         	if(mRestoreOffsets!=null)
         		Arrays.fill(mRestoreOffsets,0);
         }
+    }
+
+    private void notifyColumnCount() {
+      if (mColumnCountListener != null) {
+        mColumnCountListener.columnCountSet(mColCount);
+      }
+      mNeedToNotifyColumnCount = false;
     }
 
 
@@ -1671,6 +1718,9 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
         sglp.position = position;
         sglp.viewType = positionViewType;
 
+        //Set the updated LayoutParam before returning the view.
+        view.setLayoutParams(sglp);
+
         return view;
     }
 
@@ -2121,7 +2171,7 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
             firstId = in.readLong();
             position = in.readInt();
             topOffsets = in.createIntArray();
-            //TODO //mapping = in.createTypedList(ColMap.CREATOR);
+            mapping = in.createTypedArrayList(ColMap.CREATOR);
         }
 
         @Override
