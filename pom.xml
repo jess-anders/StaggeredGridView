@@ -11,8 +11,12 @@
     <packaging>apklib</packaging>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <android.version>4.2.2_r2</android.version>
+        <android.platform>17</android.platform>
         <java.version>1.6</java.version>
     </properties>
+
 
     <!--<repositories>-->
         <!--<repository>-->
@@ -26,8 +30,8 @@
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
+            <version>${android.version}</version>
             <scope>provided</scope>
-            <version>4.1.1.4</version>
         </dependency>
         <dependency>
             <groupId>com.google.android</groupId>
