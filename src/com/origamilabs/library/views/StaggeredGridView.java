@@ -530,7 +530,7 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
                     mTouchMode = TOUCH_MODE_IDLE;
                 }
 
-                if (!mDataChanged && mAdapter.isEnabled(motionPosition)) {
+                if (!mDataChanged && mAdapter != null && mAdapter.isEnabled(motionPosition)) {
                     // TODO : handle
                 	mTouchMode = TOUCH_MODE_TAP;
                 } else {
@@ -566,7 +566,7 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
                                             mPendingCheckForTap : mPendingCheckForLongPress);
                                 }
 
-                                if (!mDataChanged && mAdapter.isEnabled(motionPosition)) {
+                                if (!mDataChanged && mAdapter != null && mAdapter.isEnabled(motionPosition)) {
                                     mTouchMode = TOUCH_MODE_TAP;
 
                                     layoutChildren(mDataChanged);
@@ -600,7 +600,7 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
                                     mTouchMode = TOUCH_MODE_REST;
                                 }
                                 return true;
-                            } else if (!mDataChanged && mAdapter.isEnabled(motionPosition)) {
+                            } else if (!mDataChanged && mAdapter != null && mAdapter.isEnabled(motionPosition)) {
                                 performClick.run();
                             }
                         }
@@ -1717,18 +1717,20 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
     private void resetStateForGridTop() {
         // Reset mItemTops and mItemBottoms
         final int colCount = mColCount;
-        if (mItemTops == null || mItemTops.length != colCount) {
+        if (colCount != COLUMN_COUNT_AUTO) {
+          if (mItemTops == null || mItemTops.length != colCount) {
             mItemTops = new int[colCount];
             mItemBottoms = new int[colCount];
-        }
-        final int top = getPaddingTop();
-        Arrays.fill(mItemTops, top);
-        Arrays.fill(mItemBottoms, top);
+          }
+          final int top = getPaddingTop();
+          Arrays.fill(mItemTops, top);
+          Arrays.fill(mItemBottoms, top);
 
-        // Reset the first visible position in the grid to be item 0
-        mFirstPosition = 0;
-        if(mRestoreOffsets!=null)
-        Arrays.fill(mRestoreOffsets, 0);
+          // Reset the first visible position in the grid to be item 0
+          mFirstPosition = 0;
+          if(mRestoreOffsets!=null)
+            Arrays.fill(mRestoreOffsets, 0);
+        }
     }
 
     /**
