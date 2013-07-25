@@ -131,6 +131,7 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
     private long mFirstAdapterId;
     private boolean mBeginClick;
     private View mPressedChild;
+    private ColumnCountListener mColumnCountListener;
 
     private static final int TOUCH_MODE_IDLE = 0;
     private static final int TOUCH_MODE_DRAGGING = 1;
@@ -900,6 +901,9 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
             final int colCount = widthSize / mMinColWidth;
             if (colCount != mColCount) {
                 mColCount = colCount;
+                if (mColumnCountListener != null) {
+                  mColumnCountListener.columnCountSet(mColCount);
+                }
             }
         }
     }
@@ -926,6 +930,9 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
             final int colCount = getWidth() / mMinColWidth;
             if (colCount != mColCount) {
                 mColCount = colCount;
+                if (mColumnCountListener != null) {
+                  mColumnCountListener.columnCountSet(mColCount);
+                }
             }
         }
 
@@ -2567,6 +2574,14 @@ public class StaggeredGridView extends AdapterView<ListAdapter> {
 	public void setDrawSelectorOnTop(boolean mDrawSelectorOnTop) {
 		this.mDrawSelectorOnTop = mDrawSelectorOnTop;
 	}
+
+  public void setColumnCountListener(ColumnCountListener listener) {
+    mColumnCountListener = listener;
+  }
+
+  public interface ColumnCountListener {
+    public void columnCountSet(int numOfColumns);
+  }
 
 
 }
